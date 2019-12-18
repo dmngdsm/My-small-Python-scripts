@@ -35,9 +35,6 @@ while i < 153:	#Pages depend on how much subpages each category has. If you try 
 
 	i+=1
 
-# for link in pure_links:
-# 	print(link)
-
 
 # Populate CSV with links
 with open('entertainment.csv', 'w', newline='') as file:
