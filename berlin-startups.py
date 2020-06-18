@@ -1,52 +1,39 @@
 import requests    # Include HTTP Requests module
 import csv 
 from bs4 import BeautifulSoup  # Include BS web scraping module
-base_url = "https://www.viamichelin.com/web/Restaurants/Restaurants-Germany" # Website / URL we will contact
+base_url = "https://berlin.startups-list.com/" # Website / URL we will contact
 links = []
-pure_address =[]
-pure_names = []
-pure_stars = []
-pure_city = []
+names = []
+about = []
+pure_links = []
+pure_name = []
+pure_about = []
+pure_website =[]
+pure_facebook = []
+pure_twitter = []
 
 
+current_url = base_url
+print(current_url)
+#Parse Current URL
+r = requests.get(current_url)           # Sends HTTP GET Request
+soup = BeautifulSoup(r.text, "html.parser") # Parses HTTP Response
 
-for stars in range(1,2):
-	current_url = base_url+"?stars="+str(stars)
-	# +"&page=6"
-	print(current_url)
-	#Parse Current URL
-	r = requests.get(current_url)           # Sends HTTP GET Request
-	soup = BeautifulSoup(r.text, "html.parser") # Parses HTTP Response
-		
-	#Find divs 
-	headers = soup.find_all('div', attrs={'class':'poi-item-details truncate'})
+#Find divs 
+headers = soup.find_all('div', attrs={'class':'card'})
 
-	#Get addresses
-	for div in headers:
-		x= div.get_text()
-		# pure_address.append(x.split("-", 1).pop(1))
-		pure_address.append(x)
-		y = x.split()
-		city = y[-1]
-		pure_city.append(city)
+#Get names
+for div in headers:
+	names.append(div.find('h1', attrs={'property':'name'}))
+	links.append(div.find('a').get('href'))
+	about.append(div.find('p').get_text())
+#Get links
 
 
 	
-	#Get names
-	names = soup.find_all('a', attrs={'class':'truncate'})
-	for name in names:
-		pure_names.append(name.get_text()) 
-		pure_stars.append(stars)
-			  
-	# Populate CSV with info
-	with open('restaurants-germany' + str(stars) +'.csv', 'w', newline='') as file:
-	    writer = csv.writer(file)
-	    writer.writerow(["Name", "Address", "Stars", "City"])
-	    for i in range(len(pure_address)):
-	    	writer.writerow([pure_names[i], pure_address[i],pure_stars[i], pure_city[i]])
-
-	pure_address =[]
-	pure_names = []
-	pure_stars = []
-	pure_city = []
-
+# for a in names:
+# 	pure_name.append(a.text.strip())
+	
+# print(pure_name)
+print(len(links))
+print(len(about))
