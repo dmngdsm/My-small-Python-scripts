@@ -5,16 +5,11 @@ base_url = "https://berlin.startups-list.com/" # Website / URL we will contact
 links = []
 names = []
 about = []
-pure_links = []
-pure_name = []
-pure_about = []
-pure_website =[]
-pure_facebook = []
-pure_twitter = []
 
 
 current_url = base_url
 print(current_url)
+
 #Parse Current URL
 r = requests.get(current_url)           # Sends HTTP GET Request
 soup = BeautifulSoup(r.text, "html.parser") # Parses HTTP Response
@@ -22,18 +17,22 @@ soup = BeautifulSoup(r.text, "html.parser") # Parses HTTP Response
 #Find divs 
 headers = soup.find_all('div', attrs={'class':'card'})
 
-#Get names
+#Get names, websites and about
 for div in headers:
-	names.append(div.find('h1', attrs={'property':'name'}))
+	names.append(div.find('h1', attrs={'property':'name'}).get_text())
 	links.append(div.find('a').get('href'))
 	about.append(div.find('p').get_text())
-#Get links
+
+
+# Populate CSV with info
+	with open('berlin-startups-list.csv', 'w', newline='') as file:
+	    writer = csv.writer(file)
+	    writer.writerow(["Name", "About", "Website"])
+	    for i in range(len(names)):
+	    	writer.writerow([names[i], about[i],links[i]])
 
 
 	
-# for a in names:
-# 	pure_name.append(a.text.strip())
-	
-# print(pure_name)
-print(len(links))
-print(len(about))
+print('scrapie readie')
+
+
